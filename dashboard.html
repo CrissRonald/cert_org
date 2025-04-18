@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Certi_Org</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background: #e8f0fe;
+        }
+
+        h2 {
+            color: #2a2a72;
+        }
+
+        .logout-link {
+            float: right;
+            margin-top: -30px;
+        }
+
+        .logout-link a {
+            text-decoration: none;
+            background-color: #ff5e57;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 5px;
+        }
+
+        form {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        input, select {
+            margin: 5px;
+            padding: 8px;
+            width: 200px;
+        }
+
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            background-color: #fff;
+        }
+
+        th, td {
+            border: 1px solid #c0c0c0;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f8f9fa;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0077cc;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .actions a {
+            margin: 0 8px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Welcome to Your Dashboard</h2>
+    <div class="logout-link">
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        <h3>Upload Certificate</h3>
+        <input type="text" name="year" placeholder="Year" required>
+        <input type="text" name="category" placeholder="Category" required>
+        <input type="text" name="sport" placeholder="Sport" required>
+        <input type="text" name="event" placeholder="Event" required>
+        <input type="file" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <form method="GET">
+        <h3>Filter Certificates</h3>
+        <input type="text" name="year" placeholder="Year" value="{{ request.args.get('year', '') }}">
+        <input type="text" name="category" placeholder="Category" value="{{ request.args.get('category', '') }}">
+        <input type="text" name="sport" placeholder="Sport" value="{{ request.args.get('sport', '') }}">
+        <input type="text" name="event" placeholder="Event" value="{{ request.args.get('event', '') }}">
+        <button type="submit">Filter</button>
+    </form>
+
+    <h3>Uploaded Certificates</h3>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Year</th>
+            <th>Category</th>
+            <th>Sport</th>
+            <th>Event</th>
+            <th>File</th>
+            <th>Actions</th>
+        </tr>
+        {% for row in records %}
+        <tr>
+            <td>{{ row["id"] }}</td>
+            <td>{{ row["year"] }}</td>
+            <td>{{ row["category"] }}</td>
+            <td>{{ row["sport"] }}</td>
+            <td>{{ row["event"] }}</td>
+            <td><a href="{{ url_for('uploaded_file', filename=row['filename']) }}" target="_blank">View</a></td>
+            <td class="actions">
+                <a href="{{ url_for('delete_certificate', cert_id=row['id']) }}">🗑️ Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
